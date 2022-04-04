@@ -20,7 +20,9 @@ deepclean: clean
 # Extract the whl file
 src/kolibri: clean
 	rm -r src/kolibri 2> /dev/null || true
-	unzip -qo "whl/kolibri*.whl" "kolibri/*" -x "kolibri/dist/cext*" -d src/
+	unzip -qo "whl/kolibri-*.whl" "kolibri/*" -x "kolibri/dist/cext*" -d src/
+	pip install --target=src kolibri_explore_plugin
+	pip install --target=src kolibri_zim_plugin
 	# patch Django to allow migrations to be pyc files, as p4a compiles and deletes the originals
 	sed -i 's/if name.endswith(".py"):/if name.endswith(".py") or name.endswith(".pyc"):/g' src/kolibri/dist/django/db/migrations/loader.py
 	./delete_kolibri_blacklist.sh
@@ -57,9 +59,16 @@ preseeded_kolibri_home: export PYTHONPATH := tmpenv
 preseeded_kolibri_home:
 	rm -r tmpenv 2> /dev/null || true
 	rm -r src/preseeded_kolibri_home 2> /dev/null || true
+	mkdir -p src/preseeded_kolibri_home
+	touch src/preseeded_kolibri_home/options.ini
 	pip uninstall kolibri 2> /dev/null || true
-	pip install --target tmpenv whl/*.whl
+	pip install --target tmpenv whl/kolibri-*.whl
+	pip install --target tmpenv kolibri_explore_plugin
+	pip install --target tmpenv kolibri_zim_plugin
 	tmpenv/bin/kolibri plugin enable kolibri.plugins.app
+	tmpenv/bin/kolibri plugin disable kolibri.plugins.learn
+	tmpenv/bin/kolibri plugin enable kolibri_explore_plugin
+	tmpenv/bin/kolibri plugin enable kolibri_zim_plugin
 	tmpenv/bin/kolibri start --port=0
 	sleep 1
 	tmpenv/bin/kolibri stop
