@@ -54,7 +54,7 @@ kolibri.apk: p4a_android_distro preseeded_kolibri_home
 # Makes dummy file
 .PHONY: build_docker
 build_docker: Dockerfile
-	docker build -t android_kolibri .
+	podman build -t android_kolibri .
 
 preseeded_kolibri_home: export KOLIBRI_HOME := src/preseeded_kolibri_home
 preseeded_kolibri_home: export PYTHONPATH := tmpenv

@@ -12,7 +12,7 @@ CID_FILE=kolibri-android-app-container-id.cid.txt
 
 # create the container to be used throughout the script
 # creates a volume for reuse between builds, holding p4a's android distro
-docker create -it \
+podman create -it \
   --mount type=volume,src=${P4A_CACHE},dst=${CONTAINER_HOME}/.local \
   --mount type=volume,src=${PEW_CACHE},dst=${CONTAINER_HOME}/.pyeverywhere \
   --env BUILDKITE_BUILD_NUMBER \
@@ -36,18 +36,18 @@ if [ "${P4A_RELEASE_KEYSTORE}" ]; then
   if [ -a ${P4A_RELEASE_KEYSTORE} ]; then
     echo -e "Copying the signing key \n\t From ${P4A_RELEASE_KEYSTORE} to ${CONTAINER_ID}:${CONTAINER_HOME}"
     # copy keystore to same location on the container
-    docker cp ${P4A_RELEASE_KEYSTORE} ${CONTAINER_ID}:${CONTAINER_HOME}
+    podman cp ${P4A_RELEASE_KEYSTORE} ${CONTAINER_ID}:${CONTAINER_HOME}
   fi
 fi
 
 # run the container, generating the apk
 echo "Starting ${CONTAINER_ID}"
-docker start -i ${CONTAINER_ID}
+podman start -i ${CONTAINER_ID}
 
 # copy the apk to our host. Handles permissions.
 echo -e "Copying APK \n\t From ${CONTAINER_ID}:${CONTAINER_HOME}/dist/ to ${PWD}"
-docker cp ${CONTAINER_ID}:${CONTAINER_HOME}/dist/ .
+podman cp ${CONTAINER_ID}:${CONTAINER_HOME}/dist/ .
 
 # manually remove the container afterward
 echo -n "Removing "
-docker rm ${CONTAINER_ID}
+podman rm ${CONTAINER_ID}
