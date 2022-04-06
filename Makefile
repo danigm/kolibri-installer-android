@@ -80,6 +80,7 @@ preseeded_kolibri_home:
 	rm -r src/preseeded_kolibri_home/sessions 2> /dev/null || true
 	rm -r src/preseeded_kolibri_home/process_cache 2> /dev/null || true
 	touch src/preseeded_kolibri_home/was_preseeded
+	cp automatic_provision.json src/preseeded_kolibri_home/automatic_provision.json
 
 # Run the docker image.
 # TODO Would be better to just specify the file here?

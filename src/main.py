@@ -23,6 +23,7 @@ if pew.ui.platform == "android":
     from android_utils import get_home_folder, get_version_name
 
     os.environ["KOLIBRI_HOME"] = get_home_folder()
+    os.environ["KOLIBRI_AUTOMATIC_PROVISION_FILE"] = os.path.join(get_home_folder(), "automatic_provision.json")
     os.environ["KOLIBRI_APK_VERSION_NAME"] = get_version_name()
     # We can't use symlinks as at least some Android devices have the user storage
     # and app data directories on different mount points.
